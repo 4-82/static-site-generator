@@ -8,8 +8,7 @@
     all = nixpkgs.lib.genAttrs systems;
   in {
     devShells = all (system: let
-      pkgs = nixpkgs.legacyPackages.${system};
-    in {
+      pkgs = nixpkgs.legacyPackages.${system}; in {
       default = pkgs.mkShell {
         packages = builtins.attrValues {
           inherit (pkgs) nil go gh;
