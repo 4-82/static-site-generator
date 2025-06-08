@@ -104,6 +104,12 @@ def split_nodes_link(old_nodes):
                     result.append(TextNode("".join(re.findall(r".*?(?=\])", char)), TextType.LINK, "".join(re.findall(r"(?<=\().*", char)) ))
     return result
 
+def text_to_textnodes(text):
+    node = TextNode(text, TextType.TEXT)
+    result = split_nodes_delimiter([node], "**", TextType.BOLD)
+    result = split_nodes_delimiter(result, "_", TextType.ITALIC)
+    result = split_nodes_delimiter(result, "`", TextType.CODE)
+    result = split_nodes_image(result)
+    result = split_nodes_link(result)
+    return result
 
-node = TextNode("This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)", TextType.TEXT)
-print(split_nodes_link([node]))
