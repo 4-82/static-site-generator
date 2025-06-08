@@ -66,3 +66,44 @@ def extract_markdown_images(text):
 def extract_markdown_links(text):
     return re.findall(r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)", text)
 
+def split_nodes_image(old_nodes):
+    result = []
+    for node in old_nodes:
+        if (extract_markdown_images(node.text) == []):
+            result.append(node)
+        else:
+            image_alt, image_link = extract_markdown_images(node.text)
+            str = re.split(r"\!(.*?)\)", node.text)
+            str.remove("")
+            for char in str:
+                if char == "":
+                    pass
+                if (char.startswith(" ") or char.endswith(" ")):
+                    result.append(TextNode(f"{char}", TextType.TEXT))
+                else:
+                    print(re.findall(r"(?<=\().*", char))
+                    result.append(TextNode("".join(re.findall(r"(?<=\[).*?(?=\])", char)), TextType.IMAGE, "".join(re.findall(r"(?<=\().*", char)) ))
+    return result
+
+def split_nodes_link(old_nodes):
+    result = []
+    for node in old_nodes:
+        if (extract_markdown_links(node.text) == []):
+            result.append(node)
+        else:
+            str = re.split(r"\[(.*?)\)", node.text)
+            str.remove("")
+            print(f"string: {str}")
+            for char in str:
+                if char == "":
+                    pass
+                if (char.startswith(" ") or char.endswith(" ")):
+                    result.append(TextNode(f"{char}", TextType.TEXT))
+                else:
+                    print(re.findall(r"(?<=\().*", char))
+                    result.append(TextNode("".join(re.findall(r".*?(?=\])", char)), TextType.LINK, "".join(re.findall(r"(?<=\().*", char)) ))
+    return result
+
+
+node = TextNode("This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)", TextType.TEXT)
+print(split_nodes_link([node]))
