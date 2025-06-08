@@ -52,7 +52,6 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
             if (node.text.count(delimiter) % 2 != 0):
                 raise ValueError("Invalid Markdown Syntax") 
             str = node.text.split(f"{delimiter}")            
-            print(str)            
             for item in str:
                 if (item.startswith(" ") or item.endswith(" ")):
                     result.append(TextNode(f"{item}", text_type.TEXT))
@@ -72,16 +71,15 @@ def split_nodes_image(old_nodes):
         if (extract_markdown_images(node.text) == []):
             result.append(node)
         else:
-            image_alt, image_link = extract_markdown_images(node.text)
             str = re.split(r"\!(.*?)\)", node.text)
-            str.remove("")
+            if "" in str:
+                str.remove("")
             for char in str:
                 if char == "":
                     pass
                 if (char.startswith(" ") or char.endswith(" ")):
                     result.append(TextNode(f"{char}", TextType.TEXT))
                 else:
-                    print(re.findall(r"(?<=\().*", char))
                     result.append(TextNode("".join(re.findall(r"(?<=\[).*?(?=\])", char)), TextType.IMAGE, "".join(re.findall(r"(?<=\().*", char)) ))
     return result
 
@@ -92,15 +90,14 @@ def split_nodes_link(old_nodes):
             result.append(node)
         else:
             str = re.split(r"\[(.*?)\)", node.text)
-            str.remove("")
-            print(f"string: {str}")
+            if "" in str:
+                str.remove("")
             for char in str:
                 if char == "":
                     pass
                 if (char.startswith(" ") or char.endswith(" ")):
                     result.append(TextNode(f"{char}", TextType.TEXT))
                 else:
-                    print(re.findall(r"(?<=\().*", char))
                     result.append(TextNode("".join(re.findall(r".*?(?=\])", char)), TextType.LINK, "".join(re.findall(r"(?<=\().*", char)) ))
     return result
 
