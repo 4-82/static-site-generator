@@ -9,7 +9,7 @@ class BlockType(Enum):
     ORDERED_LIST = "ordered_list"
 
 def markdown_to_blocks(markdown):
-    result = list(filter(None, map(lambda x: x.strip(), text.split("\n\n"))))
+    result = list(filter(None, map(lambda x: x.strip(), markdown.split("\n\n"))))
     return result
 
 
@@ -34,7 +34,7 @@ def block_to_block_type(block):
                 result = True
             else:
                 result = False
-        if result == True:
+        if (result):
             return BlockType.ORDERED_LIST.value            
     return BlockType.PARAGRAPH.value
 
