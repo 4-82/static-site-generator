@@ -1,8 +1,24 @@
 import os, shutil
-from textnode import TextNode, TextType
+
+dir_path_static = "./static"
+dir_path_public = "./public"
+dir_path_content = "./content"
+template_path = "./template.html"
 
 def main():
-    pass
+    print("Deleting public directory...")
+    if os.path.exists(dir_path_public):
+        shutil.rmtree(dir_path_public)
+
+    print("Copying static files to public directory...")
+    handle_file_recursive(dir_path_static, dir_path_public)
+
+    print("Generating page...")
+    generate_page(
+        os.path.join(dir_path_content, "index.md"),
+        template_path,
+        (dir_path_public),
+    )
 
 def handle_file_recursive(source="./static", destination="/home/alice/projects/bootdev/static-site-generator/public"):
     if not (os.path.exists(destination)):
