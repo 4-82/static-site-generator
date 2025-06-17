@@ -11,7 +11,7 @@
       pkgs = nixpkgs.legacyPackages.${system}; in {
       default = pkgs.mkShell {
         packages = builtins.attrValues {
-          inherit (pkgs) nil go gh;
+          inherit (pkgs) nil go gh tree;
           inherit (pkgs.python312Packages) python-lsp-server ruff;
           bootdev = pkgs.callPackage ./bootdev.nix {};
         };
