@@ -30,16 +30,13 @@ def handle_file_recursive(source="./static", destination="/home/alice/projects/b
             shutil.copy2(filepath, destination)
         else:
             handle_file_recursive(os.path.join(source, content), os.path.join(destination, content))
-    
-def extract_markdown_title(markdown):
-    doc = markdown.split("\n")
-    for line in doc:
-        if ((line.startswith("#")) and (line.split(" ").count("#") == 1)):
-            string = line.split(" ")
-            string.remove("#")
-            string = " ".join(string)
-            string.strip()
-    return string
+
+def extract_markdown_title(md):
+    lines = md.split("\n")
+    for line in lines:
+        if line.startswith("# "):
+            return line[2:]
+    raise ValueError("no title found")
 
 def generate_page(from_path, template_path, dest_path):
     print(f"Generating page from {from_path} to {dest_path} using {template_path}...")
