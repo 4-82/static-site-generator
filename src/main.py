@@ -51,6 +51,7 @@ def generate_page(from_path, template_path, dest_path):
 
     file = markdown_to_html_node(from_file_text)
     file = file.to_html()
+
     title = extract_markdown_title(from_file_text)
     template = template_file_text.replace("{{ Title }}", title)
     template = template_file_text.replace("{{ Content }}", file)
@@ -62,3 +63,16 @@ def generate_page(from_path, template_path, dest_path):
         with open(os.path.join(dest_path, "index.html"), "w") as page:
             page.write(template_file_text)
         page.close()
+
+    title = extract_markdown_title(from_file_text)
+    template_file_text = template_file_text.replace("{{ Title }}", title)
+    template_file_text = template_file_text.replace("{{ Content }}", file)
+
+    if not (os.path.exists(dest_path)):
+        os.makedirs(os.path.dirname(dest_path), exist_ok=True)
+
+    with open(os.path.join(dest_path, "index.html"), "w") as page:
+        page.write(template_file_text)
+    page.close()
+
+main()
