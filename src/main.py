@@ -15,10 +15,10 @@ def main():
     handle_file_recursive(dir_path_static, dir_path_public)
 
     print("Generating page...")
-    generate_page(
-        os.path.join(dir_path_content, "index.md"),
+    generate_pages_recursive(
+        dir_path_content,
         template_path,
-        (dir_path_public),
+        dir_path_public        
     )
 
 def handle_file_recursive(source="./static", destination="/home/alice/projects/bootdev/static-site-generator/public"):
@@ -37,6 +37,39 @@ def extract_markdown_title(md):
         if line.startswith("# "):
             return line[2:]
     raise ValueError("no title found")
+
+
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+
+    template = open(template_path)
+    template_file_text = template.read()
+    template.close()
+
+    for item in os.listdir(dir_path_content):
+        filepath = os.path.join(dir_path_content, item)
+        if (os.path.isfile(filepath)):
+            source_file = open(os.path.join(dir_path_content, item))
+            source_file_text = source_file.read()
+            source_file.close()
+            
+            file = markdown_to_html_node(source_file_text)
+            file = file.to_html()
+
+            title = extract_markdown_title(source_file_text)
+            template_file_text = template_file_text.replace("{{ Title }}", title)
+            template_file_text = template_file_text.replace("{{ Content }}", file)
+
+            if os.path.exists(os.path.join(dest_dir_path, item)):
+                pass
+            else:
+                with open(os.path.join(dest_dir_path, "index.html"), "w") as page:
+                    page.write(template_file_text)
+                page.close()
+        else:         
+            os.makedirs(os.path.join(dest_dir_path, item), exist_ok=True)
+            generate_pages_recursive(filepath, template_path, os.path.join(dest_dir_path, item))
+ 
+        
 
 def generate_page(from_path, template_path, dest_path):
     print(f"Generating page from {from_path} to {dest_path} using {template_path}...")
